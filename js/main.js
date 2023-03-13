@@ -23,9 +23,9 @@ form.addEventListener('submit', (event) => {
     currentItem.id = exist.id;
     updateElement(currentItem);
 
-    items[exist.id] = currentItem;
+    items[items.findIndex(element => element.id === exist.id)] = currentItem;
   } else {
-    currentItem.id = items.length;
+    currentItem.id = items[items.length -1] ? (items[items.length -1]).id + 1 : 0;
 
     createElement(currentItem);
 
@@ -48,10 +48,39 @@ function createElement(item) {
 
   newItem.appendChild(itemQuantity);
   newItem.innerHTML += item.name;
+  newItem.appendChild(createDeleteButton(item.id));
   
   list.appendChild(newItem);
 }
 
 function updateElement(item) {
   document.querySelector(`[data-id="${item.id}"]`).innerHTML = item.quantity;
+}
+
+function createDeleteButton(id) {
+  const buttonElement = document.createElement('button');
+  buttonElement.innerHTML = 'X';
+
+  // I used regular function because 'this' is dynamic.
+  // Read more: https://dmitripavlutin.com/differences-between-arrow-and-regular-functions/
+  buttonElement.addEventListener('click', function () {
+    console.log(this);
+    deleteElement(this.parentNode, id);
+  });
+  // In arrow function 'this' is always equals 'this' value from the outer function.
+  // buttonElement.addEventListener('click',() => {
+  //   console.log(this);
+  // });
+
+  return buttonElement;
+}
+
+function deleteElement(elementTag, elementId) {
+  elementTag.remove();
+
+  items.splice(items.findIndex(element => {
+    return element.id === elementId;
+  }), 1);
+
+  localStorage.setItem('items', JSON.stringify(items));
 }

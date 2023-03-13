@@ -130,3 +130,16 @@ html {
     font-weight: 400;
 }
 
+.item button {
+    background-color: #c03527;
+    border: 0;
+    border-radius: 0.5rem;
+    color: white;
+    padding: 0.5rem;
+}
+
+.item button:active {
+    background-color: #722017;
+    position: relative;
+    top: 1px;
+}
