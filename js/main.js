@@ -12,16 +12,27 @@ form.addEventListener('submit', (event) => {
   const name = event.target.elements['name'];
   const quantity = event.target.elements['quantity'];
 
+  const exist = items.find(element => element.name === name.value);
+
   const currentItem = {
     'name': name.value,
     'quantity': quantity.value,
   }
 
-  items.push(currentItem);
+  if(exist) {
+    currentItem.id = exist.id;
+    updateElement(currentItem);
+
+    items[exist.id] = currentItem;
+  } else {
+    currentItem.id = items.length;
+
+    createElement(currentItem);
+
+    items.push(currentItem);
+  }
 
   localStorage.setItem('items', JSON.stringify(items));
-
-  createElement(currentItem);
 
   name.value = '';
   quantity.value = '';
@@ -33,9 +44,14 @@ function createElement(item) {
 
   const itemQuantity = document.createElement('strong');
   itemQuantity.innerHTML = item.quantity;
+  itemQuantity.dataset.id = item.id;
 
   newItem.appendChild(itemQuantity);
   newItem.innerHTML += item.name;
   
   list.appendChild(newItem);
+}
+
+function updateElement(item) {
+  document.querySelector(`[data-id="${item.id}"]`).innerHTML = item.quantity;
 }
